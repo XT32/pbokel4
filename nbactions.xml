@@ -10,8 +10,8 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>mvn -X exec:exec mvn clean install mvn javafx:run</exec.vmArgs>
-                <exec.args>--enable-preview ${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <exec.vmArgs></exec.vmArgs>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>main.Newfishmarket</exec.mainClass>
                 <exec.executable>java</exec.executable>
@@ -27,8 +27,8 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>mvn -X exec:exec mvn clean install mvn javafx:run -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
-                <exec.args>--enable-preview ${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>main.Newfishmarket</exec.mainClass>
                 <exec.executable>java</exec.executable>
@@ -45,8 +45,8 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>mvn -X exec:exec mvn clean install mvn javafx:run</exec.vmArgs>
-                <exec.args>--enable-preview ${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+                <exec.vmArgs></exec.vmArgs>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.mainClass>main.Newfishmarket</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <exec.appArgs></exec.appArgs>
@@ -163,6 +163,44 @@
                 <exec.vmArgs></exec.vmArgs>
                 <exec.args></exec.args>
                 <argLine>--enable-preview</argLine>
+            </properties>
+        </action>
+        <action>
+            <actionName>build-with-dependencies</actionName>
+            <reactor>also-make</reactor>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <Env.JAVA_HOME>C:\Program Files\Java\jdk-23</Env.JAVA_HOME>
+            </properties>
+        </action>
+        <action>
+            <actionName>rebuild</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <Env.JAVA_HOME>C:\Program Files\Java\jdk-23</Env.JAVA_HOME>
+            </properties>
+        </action>
+        <action>
+            <actionName>build</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <Env.JAVA_HOME>C:\Program Files\Java\jdk-23</Env.JAVA_HOME>
             </properties>
         </action>
     </actions>

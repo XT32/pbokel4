@@ -5,13 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.Parent;
 
 /**
  * Aplikasi utama
@@ -29,11 +28,13 @@ public class Newfishmarket extends Application {
     public void start(Stage stage) {
         try {
             String fxmlPath = "/view/loginRegisterView.fxml";
-            System.out.println("Mencari FXML di: " + getClass().getResource(fxmlPath));
+            System.out.println("Mencari FXML di: " + fxmlPath);
 
             URL fxmlURL = getClass().getResource(fxmlPath);
             if (fxmlURL == null) {
                 throw new IOException("File FXML tidak ditemukan di: " + fxmlPath);
+            } else {
+                System.out.println("File FXML ditemukan: " + fxmlURL);
             }
 
             FXMLLoader loader = new FXMLLoader(fxmlURL);
@@ -45,6 +46,8 @@ public class Newfishmarket extends Application {
             stage.show();
 
         } catch (IOException e) {
+            System.err.println("Gagal memuat file FXML: " + e.getMessage());
+            e.printStackTrace();
             showErrorAlert("Error", "Gagal memuat file FXML: " + e.getMessage());
         }
     }
