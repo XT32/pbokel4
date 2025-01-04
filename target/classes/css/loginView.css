@@ -7,7 +7,7 @@
 }
 
 .head-label{
-    -fx-border-color:
+    -fx-border-color:#fff;
     -fx-border-widht: 0 0 0 5px;
     -fx-padding: 0 0 0 5px;
 }

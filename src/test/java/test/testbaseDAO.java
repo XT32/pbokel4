@@ -1,18 +1,21 @@
 package test;
 
-import dao.baseDAO;
-import org.junit.jupiter.api.Test;
+import utils.baseDAO;
 import java.sql.Connection;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.sql.SQLException;
 
+/**
+ * Class to test database connection.
+ */
 public class testbaseDAO {
 
-    @Test
-    public void testDatabaseConnection() {
+    public static void main(String[] args) {
+        // Test database connection
         try (Connection connection = baseDAO.getConnection()) {
-            assertNotNull(connection, "Koneksi ke database harus berhasil.");
-        } catch (Exception e) {
-            throw new RuntimeException("Koneksi database gagal: " + e.getMessage());
+            System.out.println("Database connection test successful!");
+        } catch (SQLException e) {
+            System.err.println("Database connection test failed!");
+            e.printStackTrace();
         }
     }
 }

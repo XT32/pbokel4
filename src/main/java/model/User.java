@@ -1,59 +1,61 @@
 package model;
 
 public class User {
-
-    private String namaLengkap;
     private String username;
-    private String alamat;
+    private String namaLengkap;
     private String email;
-    private String password;
+    private String alamat;
+    private String noProfile;
 
-    public User(String namaLengkap, String username, String alamat, String email, String password) {
-        this.namaLengkap = namaLengkap;
+    public User(String username, String namaLengkap, String email, String alamat, String noProfile) {
         this.username = username;
-        this.alamat = alamat;
+        this.namaLengkap = namaLengkap;
         this.email = email;
-        this.password = password;
-    }
-
-    // Getters and Setters
-    public String getNamaLengkap() {
-        return namaLengkap;
+        this.alamat = alamat;
+        this.noProfile = noProfile;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getAlamat() {
-        return alamat;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
+    public String getNamaLengkap() {
+        return namaLengkap;
     }
 
     public void setNamaLengkap(String namaLengkap) {
         this.namaLengkap = namaLengkap;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
+    public String getNoProfile() {
+        return noProfile;
+    }
+
+    public void setNoProfile(String noProfile) {
+        this.noProfile = noProfile;
+    }
+
+    public String getPassword() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

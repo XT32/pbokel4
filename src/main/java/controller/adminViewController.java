@@ -1,167 +1,170 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import dao.AdminDAO;
+import model.Ikan;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
-/**
- *
- * @author imdaq
- */
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ResourceBundle;
+
 public class adminViewController implements Initializable {
 
     @FXML
-    private AnchorPane Dashboard_form;
+    private AnchorPane Dashboard_form, inventory_form;
 
     @FXML
-    private Button Inventory_deleteButton;
+    private TableView<Ikan> inventory_table;
 
     @FXML
-    private AnchorPane Numberof_customer;
+    private TableColumn<Ikan, Number> inventory_IDikan; // Menggunakan Number untuk IntegerProperty
+    @FXML
+    private TableColumn<Ikan, String> inventory_namaIkan, inventory_gambarIkan;
+    @FXML
+    private TableColumn<Ikan, Number> inventory_hargaIkan, inventory_stokIkan, inventory_idNelayan;
 
     @FXML
-    private AnchorPane adminView;
+    private TextField inventory_namaField, inventory_hargaField, inventory_gambarField, inventory_stokField, inventory_idNelayanField;
 
     @FXML
-    private Button dashboard_button;
-
-    @FXML
-    private Button dataBeli_button;
-
-    @FXML
-    private Button dataCustomer_button;
-
-    @FXML
-    private Button dataJual_button;
-
-    @FXML
-    private AnchorPane databeli_form;
-
-    @FXML
-    private AnchorPane datacustomer_form;
-
-    @FXML
-    private AnchorPane datajual_form;
-
-    @FXML
-    private Button display_button;
-
-    @FXML
-    private TableColumn<?, ?> inventory_IDikan;
-
-    @FXML
-    private Button inventory_annButton;
-
-    @FXML
-    private Button inventory_button;
-
-    @FXML
-    private Button inventory_clearButton;
-
-    @FXML
-    private AnchorPane inventory_form;
+    private Button inventory_annButton, inventory_updateButton, inventory_deleteButton, inventory_clearButton;
 
     @FXML
     private ImageView inventory_image_view;
 
-    @FXML
-    private Button inventory_importButton;
-
-    @FXML
-    private TableColumn<?, ?> inventory_jenisIkan;
-
-    @FXML
-    private TableColumn<?, ?> inventory_namaIkan;
-
-    @FXML
-    private TableColumn<?, ?> inventory_status;
-
-    @FXML
-    private TableColumn<?, ?> inventory_stok;
-
-    @FXML
-    private TableView<?> inventory_table;
-
-    @FXML
-    private TableColumn<?, ?> inventory_tanggalDitambahkan;
-
-    @FXML
-    private Button inventory_updateButton;
-
-    @FXML
-    private Button logout_button;
-
-    @FXML
-    private AnchorPane numberofsold;
-
-    @FXML
-    private AnchorPane scroll_dashboardForm;
-
-    @FXML
-    private TableView<?> tabeldataPenjualan;
-
-    @FXML
-    private AnchorPane todays_income;
-
-    @FXML
-    private AnchorPane total_income;
+    private Connection connection;
+    private AdminDAO adminDAO;
+    private ObservableList<Ikan> ikanList;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Tampilkan halaman Dashboard sebagai default saat aplikasi dibuka
-        showDashboard();
+        connectToDatabase();
+        adminDAO = new AdminDAO(connection);
+
+        // Set kolom tabel inventory
+        inventory_IDikan.setCellValueFactory(cellData -> cellData.getValue().idProperty());
+        inventory_namaIkan.setCellValueFactory(cellData -> cellData.getValue().namaProperty());
+        inventory_hargaIkan.setCellValueFactory(cellData -> cellData.getValue().hargaProperty());
+        inventory_gambarIkan.setCellValueFactory(cellData -> cellData.getValue().gambarIkanProperty());
+        inventory_stokIkan.setCellValueFactory(cellData -> cellData.getValue().stokProperty());
+        inventory_idNelayan.setCellValueFactory(cellData -> cellData.getValue().idNelayanProperty());
+
+        loadInventoryData();
+
+        // CRUD Button Actions
+        inventory_annButton.setOnAction(e -> addIkan());
+        inventory_updateButton.setOnAction(e -> updateIkan());
+        inventory_deleteButton.setOnAction(e -> deleteIkan());
+        inventory_clearButton.setOnAction(e -> clearInventoryFields());
     }
 
-    // Method untuk menampilkan halaman Dashboard
-    @FXML
-    private void showDashboard() {
-        setVisiblePage(Dashboard_form);
+    private void connectToDatabase() {
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/fishmarket", "root", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Method untuk menampilkan halaman Inventory
-    @FXML
-    private void showInventory() {
-        setVisiblePage(inventory_form);
+    private void loadInventoryData() {
+        try {
+            List<Ikan> list = adminDAO.getAllIkan();
+            ikanList = FXCollections.observableArrayList(list);
+            inventory_table.setItems(ikanList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Method untuk menampilkan halaman Data Jual
-    @FXML
-    private void showDataJual() {
-        setVisiblePage(datajual_form);
+    private void addIkan() {
+        try {
+            String nama = inventory_namaField.getText();
+            double harga = Double.parseDouble(inventory_hargaField.getText());
+            String gambar = inventory_gambarField.getText();
+            int stok = Integer.parseInt(inventory_stokField.getText());
+            int idNelayan = Integer.parseInt(inventory_idNelayanField.getText());
+
+            Ikan ikan = new Ikan(0, nama, harga, gambar, stok, idNelayan);
+            adminDAO.addIkan(ikan);
+            loadInventoryData();
+            clearInventoryFields();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Data ikan berhasil ditambahkan.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Terjadi kesalahan saat menambahkan data ikan.");
+        }
     }
 
-    // Method untuk menampilkan halaman Data Beli
-    @FXML
-    private void showDataBeli() {
-        setVisiblePage(databeli_form);
+    private void updateIkan() {
+        try {
+            Ikan selectedIkan = inventory_table.getSelectionModel().getSelectedItem();
+            if (selectedIkan == null) {
+                showAlert(Alert.AlertType.ERROR, "Selection Error", "Pilih ikan yang ingin diperbarui.");
+                return;
+            }
+
+            String nama = inventory_namaField.getText();
+            double harga = Double.parseDouble(inventory_hargaField.getText());
+            String gambar = inventory_gambarField.getText();
+            int stok = Integer.parseInt(inventory_stokField.getText());
+            int idNelayan = Integer.parseInt(inventory_idNelayanField.getText());
+
+            selectedIkan.setNama(nama);
+            selectedIkan.setHarga(harga);
+            selectedIkan.setGambarIkan(gambar);
+            selectedIkan.setStok(stok);
+            selectedIkan.setIdNelayan(idNelayan);
+
+            adminDAO.updateIkan(selectedIkan);
+            loadInventoryData();
+            clearInventoryFields();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Data ikan berhasil diperbarui.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Terjadi kesalahan saat memperbarui data ikan.");
+        }
     }
 
-    // Method untuk menampilkan halaman Data Customer
-    @FXML
-    private void showDataCustomer() {
-        setVisiblePage(datacustomer_form);
+    private void deleteIkan() {
+        try {
+            Ikan selectedIkan = inventory_table.getSelectionModel().getSelectedItem();
+            if (selectedIkan == null) {
+                showAlert(Alert.AlertType.ERROR, "Selection Error", "Pilih ikan yang ingin dihapus.");
+                return;
+            }
+
+            adminDAO.deleteIkan(selectedIkan.getId());
+            loadInventoryData();
+            clearInventoryFields();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Data ikan berhasil dihapus.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Terjadi kesalahan saat menghapus data ikan.");
+        }
     }
 
-    // Utility method untuk menampilkan halaman tertentu dan menyembunyikan yang lain
-    private void setVisiblePage(AnchorPane visiblePage) {
-        // Sembunyikan semua halaman
-        Dashboard_form.setVisible(false);
-        inventory_form.setVisible(false);
-        datajual_form.setVisible(false);
-        databeli_form.setVisible(false);
-        datacustomer_form.setVisible(false);
+    private void clearInventoryFields() {
+        inventory_namaField.clear();
+        inventory_hargaField.clear();
+        inventory_gambarField.clear();
+        inventory_stokField.clear();
+        inventory_idNelayanField.clear();
+        inventory_image_view.setImage(null);
+    }
 
-        // Tampilkan halaman yang dipilih
-        visiblePage.setVisible(true);
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

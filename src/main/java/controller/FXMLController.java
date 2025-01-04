@@ -96,15 +96,12 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void switchForm(ActionEvent event) {
-        // Logika untuk mengubah form antara login dan register
         System.out.println("Switching between forms...");
         Object side_alreadyHave = null;
 
         if (event.getSource() == side_createButton) {
-            // Tindakan ketika tombol "Create Account" ditekan
             System.out.println("Create Account Button Pressed");
         } else if (event.getSource() == side_alreadyHave) {
-            // Tindakan ketika tombol "Already Have an Account" ditekan
             System.out.println("Already Have an Account Button Pressed");
         }
     }
