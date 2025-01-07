@@ -1,4 +1,7 @@
+package model;
+
 public class InventoryItem {
+
     private int id;
     private String name;
     private String type;
@@ -6,7 +9,7 @@ public class InventoryItem {
     private String status;
     private String dateAdded;
 
-    // Constructor
+    // Konstruktor
     public InventoryItem(int id, String name, String type, int stock, String status, String dateAdded) {
         this.id = id;
         this.name = name;
@@ -16,7 +19,7 @@ public class InventoryItem {
         this.dateAdded = dateAdded;
     }
 
-    // Getters and Setters
+    // Getter dan Setter
     public int getId() {
         return id;
     }

@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.adminViewController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminViewController">
    <children>
       <AnchorPane fx:id="adminView" prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -172,7 +172,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="inventory_form" layoutX="41.0" layoutY="117.0" prefHeight="600.0" prefWidth="877.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="inventory_form" layoutX="41.0" layoutY="117.0" prefHeight="600.0" prefWidth="877.6" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="854.0" stylesheets="@../css/userView.css">
                                  <styleClass>
@@ -250,7 +250,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="datajual_form" layoutX="51.0" layoutY="70.0" prefHeight="600.0" prefWidth="877.6" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="datajual_form" layoutX="51.0" layoutY="70.0" prefHeight="600.0" prefWidth="877.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <Label layoutX="14.0" layoutY="23.0" text="Data Penjualan">
                                  <font>
@@ -280,11 +280,11 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <TableView fx:id="databeli_kuantitas" layoutX="13.0" layoutY="66.0" prefHeight="533.0" prefWidth="850.0" stylesheets="@../css/userView.css">
+                              <TableView fx:id="databeli_table" layoutX="13.0" layoutY="66.0" prefHeight="533.0" prefWidth="850.0" stylesheets="@../css/userView.css">
                                 <columns>
                                   <TableColumn fx:id="databeli_idtransaksi" prefWidth="75.0" text="ID Transaksi" />
                                   <TableColumn prefWidth="75.0" text="ID Ikan" />
-                                    <TableColumn prefWidth="75.0" text="Kuantitas" />
+                                    <TableColumn fx:id="databeli_kuantitas" prefWidth="75.0" text="Kuantitas" />
                                     <TableColumn fx:id="databeli_tanggal" prefWidth="75.0" text="Tanggal" />
                                     <TableColumn fx:id="databeli_total" prefWidth="75.0" text="Total" />
                                 </columns>
@@ -296,7 +296,7 @@
                         </AnchorPane>
                         <AnchorPane fx:id="datacustomer_form" layoutX="103.0" layoutY="100.0" prefHeight="600.0" prefWidth="877.6" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <TableView layoutX="14.0" layoutY="30.0" prefHeight="560.0" prefWidth="848.0" stylesheets="@../css/userView.css">
+                              <TableView fx:id="datacustomer_table" layoutX="14.0" layoutY="30.0" prefHeight="560.0" prefWidth="848.0" stylesheets="@../css/userView.css">
                                 <columns>
                                   <TableColumn fx:id="datacustomer_IDuser" prefWidth="75.0" text="ID User" />
                                   <TableColumn fx:id="datacustomer_namauser" prefWidth="75.0" text="Nama User" />

@@ -9,7 +9,7 @@ import java.sql.SQLException;
  *
  * @author alich
  */
-public class baseDAO {
+public class DatabaseConnection {
 
     // Database credentials
     private static final String JDBC_URL = "jdbc:mysql://34.44.81.201:3306/fishmarket";
@@ -22,9 +22,23 @@ public class baseDAO {
      * @return Connection object if the connection is successful
      * @throws SQLException if a database access error occurs
      */
-    
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+    }
+
+    /**
+     * Establishes and returns a database connection (alias for getConnection).
+     *
+     * @return Connection object if the connection is successful
+     * @throws RuntimeException if a database access error occurs
+     */
+    public static Connection connectDB() {
+        try {
+            return getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to connect to the database: " + e.getMessage());
+        }
     }
 
     /**
@@ -32,12 +46,11 @@ public class baseDAO {
      *
      * @param args Command-line arguments
      */
-    
     public static void main(String[] args) {
         try (Connection connection = getConnection()) {
             System.out.println("Database connection successful!");
         } catch (SQLException e) {
-            System.err.println("Database connection failed!");
+            System.err.println("Database connection failed: " + e.getMessage());
         }
     }
 }

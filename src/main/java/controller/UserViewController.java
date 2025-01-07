@@ -2,11 +2,15 @@ package controller;
 
 import model.User;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -16,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import model.Ikan;
+import utils.DatabaseConnection;
 
 public class UserViewController implements Initializable {
 
@@ -120,6 +125,7 @@ public class UserViewController implements Initializable {
         // Inisialisasi atau pemanggilan setUser jika pengguna sudah terautentikasi
         // Misalnya, mendapatkan pengguna yang sudah login dan kemudian memanggil setUser:
         // setUser(currentLoggedInUser);
+        loadFishCards();
     }
 
     @FXML
@@ -167,4 +173,71 @@ public class UserViewController implements Initializable {
             addFishCard(ikan);
         }
     }
+    
+    private void loadFishCards() {
+    try (Connection connect = DatabaseConnection.connectDB()) {
+        String query = "SELECT * FROM ikan";
+        PreparedStatement prepare = connect.prepareStatement(query);
+        ResultSet result = prepare.executeQuery();
+
+        double cardWidth = 200; // Lebar fishCard
+        double cardHeight = 300; // Tinggi fishCard
+        double xOffset = 10; // Jarak horizontal antar kartu
+        double yOffset = 10; // Jarak vertikal antar kartu
+        double startX = 10; // Posisi awal X
+        double startY = 10; // Posisi awal Y
+
+        double currentX = startX;
+        double currentY = startY;
+
+        while (result.next()) {
+            // Ambil data ikan dari database
+            int idIkan = result.getInt("id_ikan");
+            String namaIkan = result.getString("nama_ikan");
+            double harga = result.getDouble("harga");
+            String gambarIkan = result.getString("gambar_ikan");
+            int stok = result.getInt("stok");
+            int idNelayan = result.getInt("id_nelayan");
+
+            // Buat objek ikan
+            Ikan ikan = new Ikan(idIkan, namaIkan, harga, gambarIkan, stok, idNelayan);
+
+            // Muat tampilan fishCard
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fishCard.fxml"));
+            AnchorPane card = loader.load();
+
+            // Atur data ikan pada controller fishCard
+            fishCardController controller = loader.getController();
+            controller.setFishData(ikan, () -> {
+                System.out.println("Added to cart: " + ikan.getNamaIkan());
+            });
+
+            // Tentukan posisi fishCard
+            card.setLayoutX(currentX);
+            card.setLayoutY(currentY);
+
+            // Tambahkan fishCard ke marketplace
+            user_marketPlace.getChildren().add(card);
+
+            // Update posisi X dan Y
+            currentX += cardWidth + xOffset;
+            if (currentX + cardWidth > user_marketPlace.getPrefWidth()) {
+                currentX = startX;
+                currentY += cardHeight + yOffset;
+            }
+        }
+
+        // Sesuaikan tinggi kontainer agar sesuai dengan jumlah kartu
+        user_marketPlace.setPrefHeight(currentY + cardHeight + yOffset);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        showAlert(Alert.AlertType.ERROR, "Error", "Gagal memuat data ikan: " + e.getMessage());
+    }
+}
+
+    private void showAlert(Alert.AlertType alertType, String error, String string) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
