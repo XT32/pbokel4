@@ -2,10 +2,7 @@ dao\InventoryDAO.class
 data\data.class
 controller\UserViewController.class
 service\UserService.class
-dao\AdminDAO.class
-controller\AdminViewController.class
 dao\UserDAO.class
-controller\LoginRegisterViewController.class
 model\User.class
 model\Ikan.class
 model\admin.class
