@@ -35,7 +35,7 @@ public class IkanDAO {
     public void addIkan(Ikan ikan) throws SQLException {
         String query = "INSERT INTO ikan (nama_ikan, harga, gambar_ikan, stok, id_nelayan) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, ikan.getNama());
+            stmt.setString(1, ikan.getNamaIkan());
             stmt.setDouble(2, ikan.getHarga());
             stmt.setString(3, ikan.getGambarIkan());
             stmt.setInt(4, ikan.getStok());
@@ -47,12 +47,12 @@ public class IkanDAO {
     public void updateIkan(Ikan ikan) throws SQLException {
         String query = "UPDATE ikan SET nama_ikan = ?, harga = ?, gambar_ikan = ?, stok = ?, id_nelayan = ? WHERE id_ikan = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, ikan.getNama());
+            stmt.setString(1, ikan.getNamaIkan());
             stmt.setDouble(2, ikan.getHarga());
             stmt.setString(3, ikan.getGambarIkan());
             stmt.setInt(4, ikan.getStok());
             stmt.setInt(5, ikan.getIdNelayan());
-            stmt.setInt(6, ikan.getId());
+            stmt.setInt(6, ikan.getIdIkan());
             stmt.executeUpdate();
         }
     }

@@ -3,29 +3,30 @@ package model;
 import javafx.beans.property.*;
 
 public class Ikan {
-    private final IntegerProperty id;
-    private final StringProperty nama;
+    private final IntegerProperty idIkan;
+    private final StringProperty namaIkan;
     private final DoubleProperty harga;
     private final StringProperty gambarIkan;
     private final IntegerProperty stok;
     private final IntegerProperty idNelayan;
 
-    public Ikan(int id, String nama, double harga, String gambarIkan, int stok, int idNelayan) {
-        this.id = new SimpleIntegerProperty(id);
-        this.nama = new SimpleStringProperty(nama);
+    // Konstruktor
+    public Ikan(int idIkan, String namaIkan, double harga, String gambarIkan, int stok, int idNelayan) {
+        this.idIkan = new SimpleIntegerProperty(idIkan);
+        this.namaIkan = new SimpleStringProperty(namaIkan);
         this.harga = new SimpleDoubleProperty(harga);
         this.gambarIkan = new SimpleStringProperty(gambarIkan);
         this.stok = new SimpleIntegerProperty(stok);
         this.idNelayan = new SimpleIntegerProperty(idNelayan);
     }
 
-    // Getter untuk TableView Binding
-    public IntegerProperty idProperty() {
-        return id;
+    // Properti untuk binding dengan TableView
+    public IntegerProperty idIkanProperty() {
+        return idIkan;
     }
 
-    public StringProperty namaProperty() {
-        return nama;
+    public StringProperty namaIkanProperty() {
+        return namaIkan;
     }
 
     public DoubleProperty hargaProperty() {
@@ -44,52 +45,54 @@ public class Ikan {
         return idNelayan;
     }
 
-    // Getter dan Setter
-    public int getId() {
-        return id.get();
+    // Getter
+    public int getIdIkan() {
+        return idIkan.get();
     }
 
-    public void setId(int id) {
-        this.id.set(id);
-    }
-
-    public String getNama() {
-        return nama.get();
-    }
-
-    public void setNama(String nama) {
-        this.nama.set(nama);
+    public String getNamaIkan() {
+        return namaIkan.get();
     }
 
     public double getHarga() {
         return harga.get();
     }
 
-    public void setHarga(double harga) {
-        this.harga.set(harga);
-    }
-
     public String getGambarIkan() {
         return gambarIkan.get();
-    }
-
-    public void setGambarIkan(String gambarIkan) {
-        this.gambarIkan.set(gambarIkan);
     }
 
     public int getStok() {
         return stok.get();
     }
 
-    public void setStok(int stok) {
-        this.stok.set(stok);
-    }
-
     public int getIdNelayan() {
         return idNelayan.get();
+    }
+
+    // Setter
+    public void setIdIkan(int idIkan) {
+        this.idIkan.set(idIkan);
+    }
+
+    public void setNamaIkan(String namaIkan) {
+        this.namaIkan.set(namaIkan);
+    }
+
+    public void setHarga(double harga) {
+        this.harga.set(harga);
+    }
+
+    public void setGambarIkan(String gambarIkan) {
+        this.gambarIkan.set(gambarIkan);
+    }
+
+    public void setStok(int stok) {
+        this.stok.set(stok);
     }
 
     public void setIdNelayan(int idNelayan) {
         this.idNelayan.set(idNelayan);
     }
 }
+

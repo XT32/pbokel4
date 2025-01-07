@@ -1,61 +1,99 @@
 package model;
 
-public class User {
-    private String username;
-    private String namaLengkap;
-    private String email;
-    private String alamat;
-    private String noProfile;
+import javafx.beans.property.*;
 
-    public User(String username, String namaLengkap, String email, String alamat, String noProfile) {
-        this.username = username;
-        this.namaLengkap = namaLengkap;
-        this.email = email;
-        this.alamat = alamat;
-        this.noProfile = noProfile;
+public class User {
+    private final StringProperty namaLengkap;
+    private final IntegerProperty idUser;
+    private final StringProperty username;
+    private final StringProperty email;
+    private final StringProperty password;
+    private final StringProperty alamat;
+    
+
+    // Konstruktor
+    public User(int idUser, String username, String email, String password, String alamat, String namaLengkap) {
+        this.namaLengkap = new SimpleStringProperty(namaLengkap);
+        this.idUser = new SimpleIntegerProperty(idUser);
+        this.username = new SimpleStringProperty(username);
+        this.email = new SimpleStringProperty(email);
+        this.password = new SimpleStringProperty(password);
+        this.alamat = new SimpleStringProperty(alamat);
+        
     }
 
-    public String getUsername() {
+    // Properti untuk binding dengan TableView
+    public IntegerProperty idUserProperty() {
+        return idUser;
+    }
+
+    public StringProperty usernameProperty() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getNamaLengkap() {
-        return namaLengkap;
-    }
-
-    public void setNamaLengkap(String namaLengkap) {
-        this.namaLengkap = namaLengkap;
-    }
-
-    public String getEmail() {
+    public StringProperty emailProperty() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public StringProperty passwordProperty() {
+        return password;
     }
 
-    public String getAlamat() {
+    public StringProperty alamatProperty() {
         return alamat;
     }
 
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
+    public StringProperty namaLengkapProperty() {
+        return namaLengkap;
     }
 
-    public String getNoProfile() {
-        return noProfile;
+    // Getter
+    public int getIdUser() {
+        return idUser.get();
     }
 
-    public void setNoProfile(String noProfile) {
-        this.noProfile = noProfile;
+    public String getUsername() {
+        return username.get();
+    }
+
+    public String getEmail() {
+        return email.get();
     }
 
     public String getPassword() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return password.get();
+    }
+
+    public String getAlamat() {
+        return alamat.get();
+    }
+
+    public String getNamaLengkap() {
+        return namaLengkap.get();
+    }
+
+    // Setter
+    public void setIdUser(int idUser) {
+        this.idUser.set(idUser);
+    }
+
+    public void setUsername(String username) {
+        this.username.set(username);
+    }
+
+    public void setEmail(String email) {
+        this.email.set(email);
+    }
+
+    public void setPassword(String password) {
+        this.password.set(password);
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat.set(alamat);
+    }
+
+    public void setNamaLengkap(String namaLengkap) {
+        this.namaLengkap.set(namaLengkap);
     }
 }

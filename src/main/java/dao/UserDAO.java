@@ -44,13 +44,16 @@ public class UserDAO {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new User(
-                        rs.getString("nama_lengkap"),
+                // Membuat objek User dengan data yang diambil dari ResultSet
+                User user = new User(
+                        rs.getInt("id_user"),  // Mengambil id_user yang merupakan Integer
                         rs.getString("username"),
-                        rs.getString("alamat"),
                         rs.getString("email"),
-                        rs.getString("password")
+                        rs.getString("password"),
+                        rs.getString("alamat"),
+                        rs.getString("nama_lengkap")
                 );
+                return user;
             }
         } catch (SQLException e) {
             logger.error("Error during user login: " + e.getMessage(), e);

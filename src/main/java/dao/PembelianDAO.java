@@ -6,8 +6,8 @@ package dao;
 
 /**
  *
- * @author alich
+ * @author imdaq
  */
-class PembelianDAO {
+public class PembelianDAO {
     
 }

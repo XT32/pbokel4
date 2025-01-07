@@ -1,13 +1,9 @@
 data\data.class
 controller\UserViewController.class
-dao\InventoryItem.class
 service\UserService.class
 dao\AdminDAO.class
 utils\baseDAO.class
-controller\LoginController.class
-controller\FXMLController.class
 dao\UserDAO.class
-model\Customer.class
 controller\LoginRegisterViewController.class
 model\User.class
 InventoryItem.class
@@ -15,10 +11,8 @@ model\Ikan.class
 model\admin.class
 controller\adminViewController.class
 InventoryDAO.class
-model\Sale.class
 dao\baseDAO.class
 dao\PembelianDAO.class
-model\Pesanan.class
 model\Penjualan.class
 dao\IkanDAO.class
 model\Nelayan.class

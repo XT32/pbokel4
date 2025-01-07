@@ -141,7 +141,7 @@ public class LoginRegisterViewController implements Initializable {
                 return;
             }
 
-            User user = new User(namaLengkap, username, alamat, email, password);
+            User user = new User(0, username, email, password, alamat, namaLengkap);
             boolean registrationSuccess = userService.registerUser(user);
 
             if (registrationSuccess) {
@@ -158,7 +158,7 @@ public class LoginRegisterViewController implements Initializable {
     @FXML
     public void switchForm(ActionEvent event) {
         if (event.getSource() == side_alreadyHave1 || event.getSource() == side_createButton1) {
-            su_signupForm.setVisible(false); 
+            su_signupForm.setVisible(false);
             si_loginForm.setVisible(true);
             side_formRight.setVisible(false);
             side_formLeft.setVisible(true);
@@ -191,31 +191,52 @@ public class LoginRegisterViewController implements Initializable {
     }
 
     private void loadUserView(User user) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/userView.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) si_loginButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/userView.fxml"));
+        Parent root = loader.load();
 
-            UserViewController userViewController = loader.getController();
-            userViewController.setUser(user);
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Unable to load user view: " + e.getMessage());
-        }
+        // Set ukuran stage yang sesuai dengan file FXML
+        Stage stage = (Stage) si_loginButton.getScene().getWindow();
+        Scene scene = new Scene(root, 1100, 600); // Sesuaikan ukuran dengan prefWidth dan prefHeight di FXML
+        stage.setResizable(true); // Memungkinkan resize window
+        stage.setMinWidth(1100); // Ukuran minimal
+        stage.setMinHeight(600); // Ukuran minimal
+        stage.setScene(scene);
+        stage.show();
+
+        // Set data pengguna ke UserViewController
+        UserViewController userViewController = loader.getController();
+        userViewController.setUser(user);
+    } catch (IOException e) {
+        showAlert(Alert.AlertType.ERROR, "Error", "Unable to load user view: " + e.getMessage());
     }
+}
+
 
     private void loadAdminView() {
         try {
+            // Validasi apakah path resource FXML benar
+            System.out.println("Path to adminView.fxml: " + getClass().getResource("/view/adminView.fxml"));
+
+            // Pastikan path FXML sesuai dengan lokasi file sebenarnya
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/adminView.fxml"));
+
+            // Load file FXML
             Parent root = loader.load();
+
+            // Dapatkan stage dari tombol login
             Stage stage = (Stage) si_loginButton.getScene().getWindow();
             Scene scene = new Scene(root);
+
+            // Set scene baru dan tampilkan
             stage.setScene(scene);
             stage.show();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "File adminView.fxml tidak ditemukan di path yang diberikan.");
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Unable to load admin view: " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Gagal memuat file admin view: " + e.getMessage());
         }
     }
 

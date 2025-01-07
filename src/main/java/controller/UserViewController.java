@@ -2,8 +2,10 @@ package controller;
 
 import model.User;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import model.Ikan;
 
 public class UserViewController implements Initializable {
 
@@ -72,6 +75,9 @@ public class UserViewController implements Initializable {
 
     @FXML
     private Button editProfile_bt;
+    
+    @FXML
+    private Button user_logout;
 
     @FXML
     private Button logOut_Bt;
@@ -102,7 +108,7 @@ public class UserViewController implements Initializable {
             emailLabel.setText(currentUser.getEmail());
             alamatLabel.setText(currentUser.getAlamat());
 
-            no_profile.setText(currentUser.getNoProfile());
+          
             email_profile.setText(currentUser.getEmail());
             alamat_profile.setText(currentUser.getAlamat());
             alamat_profile1.setText(currentUser.getAlamat());
@@ -133,5 +139,32 @@ public class UserViewController implements Initializable {
         user_marketPlace.setVisible(true);
         user_profile.setVisible(false);
         user_history.setVisible(false);
+    }
+    
+     public void addFishCard(Ikan ikan) {
+        try {
+            // Load fish card FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fishCard.fxml"));
+            AnchorPane fishCard = loader.load();
+
+            // Set data ke controller
+            fishCardController controller = loader.getController();
+            controller.setFishData(ikan, () -> {
+                // Tambahkan logika jika ikan ditambahkan
+                System.out.println("Fish added to cart: " + ikan.getNamaIkan());
+            });
+
+            // Tambahkan kartu ke gridPane
+            ikan_gridPane.getChildren().add(fishCard);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadMarketplaceData(List<Ikan> ikanList) {
+        ikan_gridPane.getChildren().clear(); // Bersihkan kartu sebelumnya
+        for (Ikan ikan : ikanList) {
+            addFishCard(ikan);
+        }
     }
 }

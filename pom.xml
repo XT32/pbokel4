@@ -140,4 +140,5 @@
 
         </plugins>
     </build>
+    <name>newfishmarket1</name>
 </project>
