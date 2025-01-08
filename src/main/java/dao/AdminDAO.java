@@ -34,6 +34,22 @@ public class AdminDAO {
         return ikanList;
     }
 
+    // Tambahkan data ikan baru
+    public void addIkan(Ikan ikan) throws SQLException {
+        String query = "INSERT INTO ikan (nama_ikan, harga, gambar_ikan, stok, id_nelayan) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, ikan.getNamaIkan());
+            stmt.setDouble(2, ikan.getHarga());
+            stmt.setString(3, ikan.getGambarIkan());
+            stmt.setInt(4, ikan.getStok());
+            stmt.setInt(5, ikan.getIdNelayan());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to add ikan: " + e.getMessage());
+            throw e;
+        }
+    }
+
     // Ambil semua data penjualan
     public List<Pembelian> getAllPenjualan() throws SQLException {
         String query = """
@@ -109,5 +125,34 @@ public class AdminDAO {
             }
         }
         return pelangganList;
+    }
+
+    // Hapus data ikan
+    public void deleteIkan(int idIkan) throws SQLException {
+        String query = "DELETE FROM ikan WHERE id_ikan = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idIkan);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to delete ikan: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    // Perbarui data ikan
+    public void updateIkan(Ikan ikan) throws SQLException {
+        String query = "UPDATE ikan SET nama_ikan = ?, harga = ?, gambar_ikan = ?, stok = ?, id_nelayan = ? WHERE id_ikan = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, ikan.getNamaIkan());
+            stmt.setDouble(2, ikan.getHarga());
+            stmt.setString(3, ikan.getGambarIkan());
+            stmt.setInt(4, ikan.getStok());
+            stmt.setInt(5, ikan.getIdNelayan());
+            stmt.setInt(6, ikan.getIdIkan());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to update ikan: " + e.getMessage());
+            throw e;
+        }
     }
 }
