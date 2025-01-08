@@ -1,4 +1,4 @@
-package model;
+    package model;
 
 import javafx.beans.property.*;
 
@@ -31,7 +31,7 @@ public class User {
         return username;
     }
 
-    public StringProperty emailProperty() {
+    public StringProperty emailProperty() { 
         return email;
     }
 

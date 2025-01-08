@@ -10,7 +10,6 @@ import java.util.List;
 public class IkanDAO {
 
     public void addIkan(Ikan ikan) throws SQLException {
-<<<<<<< HEAD
     String query = "INSERT INTO ikan (nama_ikan, harga, gambar_ikan, stok, id_nelayan) VALUES (?, ?, ?, ?, ?)";
     try (Connection connection = DatabaseConnection.connectDB();
          PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -23,20 +22,6 @@ public class IkanDAO {
     } catch (SQLException e) {
         System.err.println("Failed to add fish data: " + e.getMessage());
         throw e;
-=======
-        String query = "INSERT INTO ikan (nama_ikan, harga, gambar_ikan, stok, id_nelayan) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = DatabaseConnection.connectDB(); PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, ikan.getNamaIkan());
-            stmt.setDouble(2, ikan.getHarga());
-            stmt.setString(3, ikan.getGambarIkan());
-            stmt.setInt(4, ikan.getStok());
-            stmt.setInt(5, ikan.getIdNelayan());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Failed to add fish data: " + e.getMessage());
-            throw e;
-        }
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df
     }
 }
 
@@ -44,7 +29,9 @@ public class IkanDAO {
     public List<Ikan> getAllIkan() throws SQLException {
         String query = "SELECT * FROM ikan";
         List<Ikan> ikanList = new ArrayList<>();
-        try (Connection connection = DatabaseConnection.connectDB(); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        try (Connection connection = DatabaseConnection.connectDB();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Ikan ikan = new Ikan(
                         rs.getInt("id_ikan"),
@@ -62,7 +49,8 @@ public class IkanDAO {
 
     public void deleteIkan(int idIkan) throws SQLException {
         String query = "DELETE FROM ikan WHERE id_ikan = ?";
-        try (Connection connection = DatabaseConnection.connectDB(); PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DatabaseConnection.connectDB();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, idIkan);
             stmt.executeUpdate();
         }
@@ -70,7 +58,8 @@ public class IkanDAO {
 
     public void updateIkan(Ikan ikan) throws SQLException {
         String query = "UPDATE ikan SET nama_ikan = ?, harga = ?, gambar_ikan = ?, stok = ?, id_nelayan = ? WHERE id_ikan = ?";
-        try (Connection connection = DatabaseConnection.connectDB(); PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = DatabaseConnection.connectDB();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, ikan.getNamaIkan());
             stmt.setDouble(2, ikan.getHarga());
             stmt.setString(3, ikan.getGambarIkan());

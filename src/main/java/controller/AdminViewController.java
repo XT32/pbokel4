@@ -1,7 +1,6 @@
 package controller;
 
 import dao.AdminDAO;
-import dao.IkanDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,10 +26,6 @@ import java.util.ResourceBundle;
 
 public class AdminViewController implements Initializable {
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-    // Dashboard Form
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     @FXML
     private AnchorPane Dashboard_form;
     @FXML
@@ -42,10 +37,6 @@ public class AdminViewController implements Initializable {
     @FXML
     private Label Numberof_customer;
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-    // Inventory Form
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     @FXML
     private AnchorPane inventory_form;
     @FXML
@@ -81,28 +72,16 @@ public class AdminViewController implements Initializable {
     @FXML
     private TableColumn<Ikan, Integer> inventory_tableIDNelayan;
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-    // Data Jual Form
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     @FXML
     private AnchorPane datajual_form;
     @FXML
     private TableView<Pembelian> datajual_table;
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-    // Data Beli Form
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     @FXML
     private AnchorPane databeli_form;
     @FXML
     private TableView<Pembelian> databeli_table;
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-    // Data Customer Form
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     @FXML
     private AnchorPane datacustomer_form;
     @FXML
@@ -126,30 +105,18 @@ public class AdminViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            // Initialize DAO and Database Connection
             Connection connection = DatabaseConnection.connectDB();
             adminDAO = new AdminDAO(connection);
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-            // Bind TableColumns
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
             inventory_tablenamaIkan.setCellValueFactory(cellData -> cellData.getValue().namaIkanProperty());
             inventory_tableHarga.setCellValueFactory(cellData -> cellData.getValue().hargaProperty().asObject());
             inventory_tableStok.setCellValueFactory(cellData -> cellData.getValue().stokProperty().asObject());
             inventory_tableIDNelayan.setCellValueFactory(cellData -> cellData.getValue().idNelayanProperty().asObject());
 
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
             inventory_clearButton.setOnAction(event -> clearInventoryForm());
 
             handleDashboardButtonAction();
 
-=======
-            // Load Initial Data
-            handleDashboardButtonAction();
-
-            // Button Actions
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
             dashboard_button.setOnAction(event -> handleDashboardButtonAction());
             inventory_button.setOnAction(event -> handleInventoryButtonAction());
             dataJual_button.setOnAction(event -> handleDataJualButtonAction());
@@ -158,7 +125,6 @@ public class AdminViewController implements Initializable {
             logout_button.setOnAction(event -> handleLogoutButtonAction());
             inventory_importButton.setOnAction(event -> handleImportImage());
             inventory_addButton.setOnAction(event -> handleAddIkan());
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
 
             loadDashboardData();
             loadInventoryData();
@@ -166,17 +132,6 @@ public class AdminViewController implements Initializable {
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Initialization Error", "Failed to initialize the controller: " + e.getMessage());
         }
-=======
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Initialization Error", "Failed to initialize the controller: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void handleDashboardButtonAction() {
-        setVisibleForm(Dashboard_form);
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     }
 
     @FXML
@@ -191,7 +146,6 @@ public class AdminViewController implements Initializable {
     }
 
     @FXML
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
     private void handleDashboardButtonAction() {
         setVisibleForm(Dashboard_form);
         loadDashboardData();
@@ -223,80 +177,20 @@ public class AdminViewController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to add fish data: " + e.getMessage());
         }
     }
-=======
-    private void handleAddIkan() {
-        try {
-            // Validate and Parse Inputs
-            String namaIkan = inventory_namaIkan.getText();
-            int stok = Integer.parseInt(inventory_stok.getText());
-            double harga = Double.parseDouble(inventory_harga.getText());
-            int idNelayan = Integer.parseInt(inventory_IDNelayan.getText());
-            String gambarIkan = inventory_image_view.getImage() != null
-                    ? "images/" + new File(inventory_image_view.getImage().getUrl()).getName()
-                    : null;
-
-            if (namaIkan.isEmpty() || stok <= 0 || harga <= 0 || idNelayan <= 0) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled with valid data.");
-                return;
-            }
-
-            // Create and Save Ikan
-            Ikan ikan = new Ikan(0, namaIkan, harga, gambarIkan, stok, idNelayan);
-            adminDAO.addIkan(ikan);
-
-            // Refresh Table
-            handleInventoryButtonAction();
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Fish data successfully added.");
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Input Error", "Invalid input format: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to add fish data: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
 
     @FXML
     private void handleDataJualButtonAction() {
         setVisibleForm(datajual_form);
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-        try {
-            List<Pembelian> penjualanList = adminDAO.getAllPenjualan();
-            datajual_table.setItems(FXCollections.observableArrayList(penjualanList));
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load sales data: " + e.getMessage());
-        }
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     }
 
     @FXML
     private void handleDataBeliButtonAction() {
         setVisibleForm(databeli_form);
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-        try {
-            List<Pembelian> pembelianList = adminDAO.getAllPembelian();
-            databeli_table.setItems(FXCollections.observableArrayList(pembelianList));
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load purchase data: " + e.getMessage());
-        }
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     }
 
     @FXML
     private void handleDataCustomerButtonAction() {
         setVisibleForm(datacustomer_form);
-<<<<<<< HEAD:src/main/java/controller/adminViewController.java
-=======
-        try {
-            List<Nelayan> pelangganList = adminDAO.getAllPelanggan();
-            datacustomer_table.setItems(FXCollections.observableArrayList(pelangganList));
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load customer data: " + e.getMessage());
-        }
->>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/controller/AdminViewController.java
     }
 
     @FXML

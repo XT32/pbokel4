@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.control.Label;
 
 public class LoginRegisterViewController implements Initializable {
 
@@ -37,6 +38,9 @@ public class LoginRegisterViewController implements Initializable {
 
     @FXML
     private TextField su_alamat;
+    
+       @FXML
+    private Label username;
 
     @FXML
     private TextField su_confirmPass;
