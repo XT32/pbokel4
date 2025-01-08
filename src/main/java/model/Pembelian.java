@@ -3,22 +3,24 @@ package model;
 import java.time.LocalDateTime;
 
 public class Pembelian {
-    private int idPembelian;
-    private int idIkan;
-    private int idNelayan;
-    private int jumlahBeli;
-    private double hargaTotal;
-    private LocalDateTime tanggalPembelian;
+    private int idPembelian; // ID Transaksi pembelian
+    private int idIkan; // ID Ikan yang dibeli
+    private int idUser; // ID User/pembeli (bukan idNelayan)
+    private int jumlahBeli; // Jumlah item yang dibeli
+    private double hargaTotal; // Total harga pembelian
+    private LocalDateTime tanggalPembelian; // Tanggal pembelian
 
-    public Pembelian(int idPembelian, int idIkan, int idNelayan, int jumlahBeli, double hargaTotal, LocalDateTime tanggalPembelian) {
+    // Konstruktor utama
+    public Pembelian(int idPembelian, String string, int idIkan, double hargaTotal, LocalDateTime tanggalPembelian) {
         this.idPembelian = idPembelian;
         this.idIkan = idIkan;
-        this.idNelayan = idNelayan;
+        this.idUser = idUser;
         this.jumlahBeli = jumlahBeli;
         this.hargaTotal = hargaTotal;
         this.tanggalPembelian = tanggalPembelian;
     }
 
+    // Getter dan Setter
     public int getIdPembelian() {
         return idPembelian;
     }
@@ -35,12 +37,12 @@ public class Pembelian {
         this.idIkan = idIkan;
     }
 
-    public int getIdNelayan() {
-        return idNelayan;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setIdNelayan(int idNelayan) {
-        this.idNelayan = idNelayan;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     public int getJumlahBeli() {
@@ -65,5 +67,18 @@ public class Pembelian {
 
     public void setTanggalPembelian(LocalDateTime tanggalPembelian) {
         this.tanggalPembelian = tanggalPembelian;
+    }
+
+    // Overriding toString() untuk debugging mudah
+    @Override
+    public String toString() {
+        return "Pembelian{" +
+                "idPembelian=" + idPembelian +
+                ", idIkan=" + idIkan +
+                ", idUser=" + idUser +
+                ", jumlahBeli=" + jumlahBeli +
+                ", hargaTotal=" + hargaTotal +
+                ", tanggalPembelian=" + tanggalPembelian +
+                '}';
     }
 }

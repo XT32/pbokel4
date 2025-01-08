@@ -13,7 +13,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="card_form" prefHeight="170.0" prefWidth="229.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23">
     <stylesheets>
-        <URL value="@/styles/fishcard.css" />
+        <URL value="@../css/loginView.css" />
     </stylesheets>
    <children>
       <VBox layoutX="91.0" layoutY="-30.0" prefHeight="170.0" prefWidth="229.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import model.Ikan;
 
-public class fishCardController {
+public class FishCardController {
 
     @FXML
     private Button addButton;

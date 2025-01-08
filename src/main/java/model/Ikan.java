@@ -10,7 +10,6 @@ public class Ikan {
     private final IntegerProperty stok;
     private final IntegerProperty idNelayan;
 
-    // Konstruktor
     public Ikan(int idIkan, String namaIkan, double harga, String gambarIkan, int stok, int idNelayan) {
         this.idIkan = new SimpleIntegerProperty(idIkan);
         this.namaIkan = new SimpleStringProperty(namaIkan);
@@ -20,7 +19,6 @@ public class Ikan {
         this.idNelayan = new SimpleIntegerProperty(idNelayan);
     }
 
-    // Properti untuk binding dengan TableView
     public IntegerProperty idIkanProperty() {
         return idIkan;
     }
@@ -45,7 +43,6 @@ public class Ikan {
         return idNelayan;
     }
 
-    // Getter
     public int getIdIkan() {
         return idIkan.get();
     }
@@ -69,30 +66,4 @@ public class Ikan {
     public int getIdNelayan() {
         return idNelayan.get();
     }
-
-    // Setter
-    public void setIdIkan(int idIkan) {
-        this.idIkan.set(idIkan);
-    }
-
-    public void setNamaIkan(String namaIkan) {
-        this.namaIkan.set(namaIkan);
-    }
-
-    public void setHarga(double harga) {
-        this.harga.set(harga);
-    }
-
-    public void setGambarIkan(String gambarIkan) {
-        this.gambarIkan.set(gambarIkan);
-    }
-
-    public void setStok(int stok) {
-        this.stok.set(stok);
-    }
-
-    public void setIdNelayan(int idNelayan) {
-        this.idNelayan.set(idNelayan);
-    }
 }
-

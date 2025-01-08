@@ -1,243 +1,209 @@
 package controller;
 
-import model.User;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.ResourceBundle;
+import dao.UserDAO;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import model.Ikan;
-import utils.DatabaseConnection;
+import model.Pembelian;
+import model.User;
+import javafx.stage.Stage;
+
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class UserViewController implements Initializable {
 
     @FXML
-    private AnchorPane UserView;
+    private AnchorPane user_profile, user_marketPlace, user_history;
 
     @FXML
-    private Label namalengkap;
+    private Label namalengkap, usernamelabel, emailLabel, alamatLabel;
 
     @FXML
-    private Button user_shopButton;
-
-    @FXML
-    private Button user_profileButton;
-
-    @FXML
-    private Button user_historyButton;
-
-    @FXML
-    private AnchorPane user_marketPlace;
-
-    @FXML
-    private ScrollPane menu_scrollPane;
+    private Button user_shopButton, user_profileButton, user_historyButton, user_logout;
 
     @FXML
     private GridPane ikan_gridPane;
 
     @FXML
-    private TableView<?> shop_listBeli;
+    private TableView<Pembelian> history_table;
 
     @FXML
-    private TableColumn<?, ?> shop_namaIkan;
+    private TableColumn<Pembelian, String> history_namaIkan;
 
     @FXML
-    private TableColumn<?, ?> shop_kuantitas;
+    private TableColumn<Pembelian, Integer> history_kuantitas;
 
     @FXML
-    private TableColumn<?, ?> shop_harga;
+    private TableColumn<Pembelian, Double> history_totalHarga;
 
     @FXML
-    private Button shop_bayar;
+    private TextField email_profile, alamat_profile;
 
     @FXML
-    private AnchorPane user_history;
-
-    @FXML
-    private AnchorPane user_profile;
-
-    @FXML
-    private TextField no_profile;
-
-    @FXML
-    private TextField email_profile;
-
-    @FXML
-    private TextField alamat_profile;
-
-    @FXML
-    private Button editProfile_bt;
-    
-    @FXML
-    private Button user_logout;
-
-    @FXML
-    private Button logOut_Bt;
-
-    @FXML
-    private TextField alamat_profile1;
-
-    @FXML
-    private Label usernameLabel;
-
-    @FXML
-    private Label emailLabel;
-
-    @FXML
-    private Label alamatLabel;
+    private Button editProfile_bt, saveProfile_bt;
 
     private User currentUser;
+    private UserDAO userDAO;
 
+    /**
+     * Set data pengguna yang sedang login dan tampilkan pesan selamat datang.
+     *
+     * @param user Pengguna yang berhasil login.
+     */
     public void setUser(User user) {
         this.currentUser = user;
+
+        // Pastikan data pengguna benar
+        System.out.println("User Data: " + user);
+
         updateProfileInfo();
-    }
 
-    private void updateProfileInfo() {
-        if (currentUser != null) {
-            namalengkap.setText(currentUser.getNamaLengkap());
-            usernameLabel.setText(currentUser.getUsername());
-            emailLabel.setText(currentUser.getEmail());
-            alamatLabel.setText(currentUser.getAlamat());
-
-          
-            email_profile.setText(currentUser.getEmail());
-            alamat_profile.setText(currentUser.getAlamat());
-            alamat_profile1.setText(currentUser.getAlamat());
-        }
+        // Tampilkan alert selamat datang
+        showAlert(Alert.AlertType.INFORMATION, "Welcome", "Welcome, " + user.getUsername() + "!");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Inisialisasi atau pemanggilan setUser jika pengguna sudah terautentikasi
-        // Misalnya, mendapatkan pengguna yang sudah login dan kemudian memanggil setUser:
-        // setUser(currentLoggedInUser);
-        loadFishCards();
+        try {
+            userDAO = new UserDAO();
+
+            // Event handling untuk tombol
+            user_shopButton.setOnAction(event -> showMarketPlace());
+            user_profileButton.setOnAction(event -> showUserProfile());
+            user_historyButton.setOnAction(event -> showUserHistory());
+            user_logout.setOnAction(event -> handleLogout());
+            editProfile_bt.setOnAction(event -> enableProfileEdit());
+            saveProfile_bt.setOnAction(event -> saveUserProfile());
+
+            // Tampilkan marketplace sebagai default
+            showMarketPlace();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Initialization Error", "Failed to initialize UserViewController: " + e.getMessage());
+        }
     }
 
-    @FXML
-    public void handleEditProfile() {
-        // Implementasi logika edit profil jika diperlukan
-        // Memungkinkan pengguna untuk memperbarui informasi di TextField
-        System.out.println("Editing profile...");
+    private void updateProfileInfo() {
+        if (currentUser != null) {
+            // Pastikan namalengkap menampilkan username, bukan alamat
+            if (namalengkap != null) {
+                namalengkap.setText("Welcome, " + currentUser.getUsername());
+            }
+
+            // Perbarui informasi lain
+            usernamelabel.setText(currentUser.getUsername());
+            emailLabel.setText(currentUser.getEmail());
+            alamatLabel.setText(currentUser.getAlamat());
+            email_profile.setText(currentUser.getEmail());
+            alamat_profile.setText(currentUser.getAlamat());
+        } else {
+            System.err.println("Current user is null.");
+        }
     }
 
-    @FXML
-    public void handleLogout() {
-        System.out.println("Logging out...");
+    private void enableProfileEdit() {
+        email_profile.setDisable(false);
+        alamat_profile.setDisable(false);
+        saveProfile_bt.setDisable(false);
     }
 
-    @FXML
-    public void showMarketPlace() {
+    private void saveUserProfile() {
+        try {
+            currentUser.setEmail(email_profile.getText());
+            currentUser.setAlamat(alamat_profile.getText());
+            userDAO.updateUserProfile(currentUser);
+
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Profile updated successfully!");
+
+            email_profile.setDisable(true);
+            alamat_profile.setDisable(true);
+            saveProfile_bt.setDisable(true);
+            updateProfileInfo();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to update profile: " + e.getMessage());
+        }
+    }
+
+    private void showMarketPlace() {
         user_marketPlace.setVisible(true);
         user_profile.setVisible(false);
         user_history.setVisible(false);
+        loadMarketplaceData();
     }
-    
-     public void addFishCard(Ikan ikan) {
+
+    private void showUserProfile() {
+        user_marketPlace.setVisible(false);
+        user_profile.setVisible(true);
+        user_history.setVisible(false);
+        updateProfileInfo();
+    }
+
+    private void showUserHistory() {
+        user_marketPlace.setVisible(false);
+        user_profile.setVisible(false);
+        user_history.setVisible(true);
+        loadPurchaseHistory();
+    }
+
+    @FXML
+    private void handleLogout() {
         try {
-            // Load fish card FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fishCard.fxml"));
-            AnchorPane fishCard = loader.load();
+            user_logout.getScene().getWindow().hide();
 
-            // Set data ke controller
-            fishCardController controller = loader.getController();
-            controller.setFishData(ikan, () -> {
-                // Tambahkan logika jika ikan ditambahkan
-                System.out.println("Fish added to cart: " + ikan.getNamaIkan());
-            });
-
-            // Tambahkan kartu ke gridPane
-            ikan_gridPane.getChildren().add(fishCard);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginRegisterView.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login");
+            stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to return to login page: " + e.getMessage());
         }
     }
 
-    public void loadMarketplaceData(List<Ikan> ikanList) {
-        ikan_gridPane.getChildren().clear(); // Bersihkan kartu sebelumnya
-        for (Ikan ikan : ikanList) {
-            addFishCard(ikan);
-        }
-    }
-    
-    private void loadFishCards() {
-    try (Connection connect = DatabaseConnection.connectDB()) {
-        String query = "SELECT * FROM ikan";
-        PreparedStatement prepare = connect.prepareStatement(query);
-        ResultSet result = prepare.executeQuery();
+    private void loadMarketplaceData() {
+        try {
+            List<Ikan> ikanList = userDAO.getAllIkan();
+            ikan_gridPane.getChildren().clear();
 
-        double cardWidth = 200; // Lebar fishCard
-        double cardHeight = 300; // Tinggi fishCard
-        double xOffset = 10; // Jarak horizontal antar kartu
-        double yOffset = 10; // Jarak vertikal antar kartu
-        double startX = 10; // Posisi awal X
-        double startY = 10; // Posisi awal Y
+            for (Ikan ikan : ikanList) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fishCard.fxml"));
+                AnchorPane fishCard = loader.load();
 
-        double currentX = startX;
-        double currentY = startY;
+                FishCardController controller = loader.getController();
+                controller.setFishData(ikan, () -> {
+                    System.out.println("Added to cart: " + ikan.getNamaIkan());
+                });
 
-        while (result.next()) {
-            // Ambil data ikan dari database
-            int idIkan = result.getInt("id_ikan");
-            String namaIkan = result.getString("nama_ikan");
-            double harga = result.getDouble("harga");
-            String gambarIkan = result.getString("gambar_ikan");
-            int stok = result.getInt("stok");
-            int idNelayan = result.getInt("id_nelayan");
-
-            // Buat objek ikan
-            Ikan ikan = new Ikan(idIkan, namaIkan, harga, gambarIkan, stok, idNelayan);
-
-            // Muat tampilan fishCard
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fishCard.fxml"));
-            AnchorPane card = loader.load();
-
-            // Atur data ikan pada controller fishCard
-            fishCardController controller = loader.getController();
-            controller.setFishData(ikan, () -> {
-                System.out.println("Added to cart: " + ikan.getNamaIkan());
-            });
-
-            // Tentukan posisi fishCard
-            card.setLayoutX(currentX);
-            card.setLayoutY(currentY);
-
-            // Tambahkan fishCard ke marketplace
-            user_marketPlace.getChildren().add(card);
-
-            // Update posisi X dan Y
-            currentX += cardWidth + xOffset;
-            if (currentX + cardWidth > user_marketPlace.getPrefWidth()) {
-                currentX = startX;
-                currentY += cardHeight + yOffset;
+                ikan_gridPane.add(fishCard, ikan_gridPane.getChildren().size() % 3, ikan_gridPane.getChildren().size() / 3);
             }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load marketplace data: " + e.getMessage());
         }
-
-        // Sesuaikan tinggi kontainer agar sesuai dengan jumlah kartu
-        user_marketPlace.setPrefHeight(currentY + cardHeight + yOffset);
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        showAlert(Alert.AlertType.ERROR, "Error", "Gagal memuat data ikan: " + e.getMessage());
-    }
-}
-
-    private void showAlert(Alert.AlertType alertType, String error, String string) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    private void loadPurchaseHistory() {
+        try {
+            List<Pembelian> history = userDAO.getPurchaseHistory(currentUser.getIdUser());
+            history_table.setItems(FXCollections.observableArrayList(history));
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load purchase history: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

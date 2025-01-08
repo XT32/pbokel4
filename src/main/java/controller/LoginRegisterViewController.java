@@ -89,37 +89,41 @@ public class LoginRegisterViewController implements Initializable {
     @FXML
     public void handleLogin(ActionEvent event) {
         try {
+            // Ambil input dari form login
             String username = si_username.getText();
             String password = si_password.getText();
 
+            // Validasi input
             if (username.isEmpty() || password.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Login Failed", "Username and password cannot be empty.");
                 return;
             }
 
-            // Check if the login is for admin
+            // Cek jika admin login
             if ("admin".equals(username) && "admin123".equals(password)) {
                 showAlert(Alert.AlertType.INFORMATION, "Login Success", "Welcome, Admin!");
                 loadAdminView();
                 return;
             }
 
-            // Regular user login
-            User user = userService.loginUser(username, password);
+            // Login sebagai pengguna biasa
+            User user = userService.loginUser(username, password); // Memeriksa login melalui service
             if (user != null) {
-                showAlert(Alert.AlertType.INFORMATION, "Login Success", "Welcome, " + user.getNamaLengkap());
-                loadUserView(user);
+                showAlert(Alert.AlertType.INFORMATION, "Login Success", "Welcome, " + user.getUsername());
+                loadUserView(user); // Memuat tampilan pengguna dengan data pengguna
             } else {
                 showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
             }
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", "An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML
     public void handleRegister(ActionEvent event) {
         try {
+            // Ambil input dari form register
             String namaLengkap = su_namaLengkap.getText();
             String username = su_username.getText();
             String alamat = su_alamat.getText();
@@ -127,33 +131,41 @@ public class LoginRegisterViewController implements Initializable {
             String password = su_password.getText();
             String confirmPass = su_confirmPass.getText();
 
+            // Validasi input
             if (namaLengkap.isEmpty() || username.isEmpty() || alamat.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPass.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Registration Failed", "All fields must be filled.");
                 return;
             }
 
+            // Validasi password dan konfirmasi password
             if (!password.equals(confirmPass)) {
                 showAlert(Alert.AlertType.ERROR, "Registration Failed", "Passwords do not match.");
                 return;
             }
 
+            // Validasi format email dan kekuatan password
             if (!isInputValid(email, password)) {
                 return;
             }
 
-            User user = new User(0, username, email, password, alamat, namaLengkap);
+            // Buat objek User baru
+            User user = new User(0, username, email, password, alamat, namaLengkap); // ID user diatur otomatis di database
+
+            // Lakukan registrasi melalui UserService
             boolean registrationSuccess = userService.registerUser(user);
 
             if (registrationSuccess) {
                 showAlert(Alert.AlertType.INFORMATION, "Registration Success", "Account created successfully!");
-                switchFormToLogin();
+                switchFormToLogin(); // Pindah ke form login setelah registrasi berhasil
             } else {
                 showAlert(Alert.AlertType.ERROR, "Registration Failed", "An error occurred. Try again.");
             }
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", "An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     @FXML
     public void switchForm(ActionEvent event) {

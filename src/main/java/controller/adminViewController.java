@@ -3,12 +3,16 @@ package controller;
 import dao.AdminDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import model.Ikan;
 import model.Pembelian;
 import model.Nelayan;
@@ -19,12 +23,9 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.BarChart;
-import model.User;
 
 public class AdminViewController implements Initializable {
-   // Form Dashboard
+
     @FXML
     private AnchorPane Dashboard_form;
     @FXML
@@ -36,7 +37,6 @@ public class AdminViewController implements Initializable {
     @FXML
     private Label Numberof_customer;
 
-    // Form Inventory
     @FXML
     private AnchorPane inventory_form;
     @FXML
@@ -58,7 +58,7 @@ public class AdminViewController implements Initializable {
     @FXML
     private Button inventory_importButton;
     @FXML
-    private Button Inventory_deleteButton;
+    private Button inventory_deleteButton;
     @FXML
     private ImageView inventory_image_view;
     @FXML
@@ -72,25 +72,21 @@ public class AdminViewController implements Initializable {
     @FXML
     private TableColumn<Ikan, Integer> inventory_tableIDNelayan;
 
-    // Form Data Jual
     @FXML
     private AnchorPane datajual_form;
     @FXML
     private TableView<Pembelian> datajual_table;
 
-    // Form Data Beli
     @FXML
     private AnchorPane databeli_form;
     @FXML
     private TableView<Pembelian> databeli_table;
 
-    // Form Data Customer
     @FXML
     private AnchorPane datacustomer_form;
     @FXML
     private TableView<Nelayan> datacustomer_table;
 
-    // Buttons
     @FXML
     private Button dashboard_button;
     @FXML
@@ -104,123 +100,112 @@ public class AdminViewController implements Initializable {
     @FXML
     private Button logout_button;
 
-
     private AdminDAO adminDAO;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize the DAO
         try {
             Connection connection = DatabaseConnection.connectDB();
             adminDAO = new AdminDAO(connection);
-            System.out.println("AdminDAO initialized successfully.");
+
+            inventory_tablenamaIkan.setCellValueFactory(cellData -> cellData.getValue().namaIkanProperty());
+            inventory_tableHarga.setCellValueFactory(cellData -> cellData.getValue().hargaProperty().asObject());
+            inventory_tableStok.setCellValueFactory(cellData -> cellData.getValue().stokProperty().asObject());
+            inventory_tableIDNelayan.setCellValueFactory(cellData -> cellData.getValue().idNelayanProperty().asObject());
+
+            inventory_clearButton.setOnAction(event -> clearInventoryForm());
+
+            handleDashboardButtonAction();
+
+            dashboard_button.setOnAction(event -> handleDashboardButtonAction());
+            inventory_button.setOnAction(event -> handleInventoryButtonAction());
+            dataJual_button.setOnAction(event -> handleDataJualButtonAction());
+            dataBeli_button.setOnAction(event -> handleDataBeliButtonAction());
+            dataCustomer_button.setOnAction(event -> handleDataCustomerButtonAction());
+            logout_button.setOnAction(event -> handleLogoutButtonAction());
+            inventory_importButton.setOnAction(event -> handleImportImage());
+            inventory_addButton.setOnAction(event -> handleAddIkan());
+
+            loadDashboardData();
+            loadInventoryData();
+
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to connect to the database: " + e.getMessage());
-            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Initialization Error", "Failed to initialize the controller: " + e.getMessage());
         }
-
-        // Show the default form (Dashboard)
-        handleDashboardButtonAction();
-
-        // Bind buttons with respective methods
-        dashboard_button.setOnAction(event -> handleDashboardButtonAction());
-        inventory_button.setOnAction(event -> handleInventoryButtonAction());
-        dataJual_button.setOnAction(event -> handleDataJualButtonAction());
-        dataBeli_button.setOnAction(event -> handleDataBeliButtonAction());
-        dataCustomer_button.setOnAction(event -> handleDataCustomerButtonAction());
-        logout_button.setOnAction(event -> handleLogoutButtonAction());
-        inventory_importButton.setOnAction(event -> handleImportImage());
-        inventory_addButton.setOnAction(event -> handleAddIkan());
-
-    }
-
-    @FXML
-    private void handleDashboardButtonAction() {
-        setVisibleForm(Dashboard_form);
     }
 
     @FXML
     private void handleInventoryButtonAction() {
         setVisibleForm(inventory_form);
-
-        // Load inventory data
         try {
             List<Ikan> ikanList = adminDAO.getAllIkan();
             inventory_table.setItems(FXCollections.observableArrayList(ikanList));
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load inventory data: " + e.getMessage());
-            e.printStackTrace();
         }
     }
-    
+
     @FXML
-private void handleAddIkan() {
-    try {
-        // Ambil data dari input field
-        int idIkan = Integer.parseInt(inventory_IDIkan.getText());
-        String namaIkan = inventory_namaIkan.getText();
-        int stok = Integer.parseInt(inventory_stok.getText());
-        double harga = Double.parseDouble(inventory_harga.getText());
-        int idNelayan = Integer.parseInt(inventory_IDNelayan.getText());
-
-        // Tambahkan ikan ke database
-        Ikan ikan = new Ikan(idIkan, namaIkan, harga, null, stok, idNelayan); // Null untuk gambar sementara
-        adminDAO.getAllIkan();
-
-        // Refresh tabel
-        handleInventoryButtonAction();
-
-        // Beri konfirmasi sukses
-        showAlert(Alert.AlertType.INFORMATION, "Success", "Data ikan berhasil ditambahkan.");
-    } catch (Exception e) {
-        showAlert(Alert.AlertType.ERROR, "Error", "Gagal menambahkan data ikan: " + e.getMessage());
-        e.printStackTrace();
+    private void handleDashboardButtonAction() {
+        setVisibleForm(Dashboard_form);
+        loadDashboardData();
     }
-}
 
+    @FXML
+    private void handleAddIkan() {
+        try {
+            String namaIkan = inventory_namaIkan.getText();
+            int stok = Integer.parseInt(inventory_stok.getText());
+            double harga = Double.parseDouble(inventory_harga.getText());
+            int idNelayan = Integer.parseInt(inventory_IDNelayan.getText());
+            String gambarIkan = inventory_image_view.getImage() != null
+                    ? "images/" + new File(inventory_image_view.getImage().getUrl()).getName()
+                    : null;
+
+            if (namaIkan.isEmpty() || stok <= 0 || harga <= 0 || idNelayan <= 0) {
+                showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled with valid data.");
+                return;
+            }
+
+            Ikan ikan = new Ikan(0, namaIkan, harga, gambarIkan, stok, idNelayan);
+            adminDAO.addIkan(ikan);
+            handleInventoryButtonAction();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Fish data successfully added.");
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Invalid input format: " + e.getMessage());
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to add fish data: " + e.getMessage());
+        }
+    }
 
     @FXML
     private void handleDataJualButtonAction() {
         setVisibleForm(datajual_form);
-
-        // Load sales data
-        try {
-            List<Pembelian> penjualanList = adminDAO.getAllPenjualan();
-            datajual_table.setItems(FXCollections.observableArrayList(penjualanList));
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load sales data: " + e.getMessage());
-        }
     }
 
     @FXML
     private void handleDataBeliButtonAction() {
         setVisibleForm(databeli_form);
-
-        // Load purchase data
-        try {
-            List<Pembelian> pembelianList = adminDAO.getAllPembelian();
-            databeli_table.setItems(FXCollections.observableArrayList(pembelianList));
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load purchase data: " + e.getMessage());
-        }
     }
 
     @FXML
     private void handleDataCustomerButtonAction() {
         setVisibleForm(datacustomer_form);
-
-        // Load customer data
-        try {
-            List<Nelayan> pelangganList = adminDAO.getAllPelanggan();
-            datacustomer_table.setItems(FXCollections.observableArrayList(pelangganList));
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load customer data: " + e.getMessage());
-        }
     }
 
     @FXML
     private void handleLogoutButtonAction() {
-        showAlert(Alert.AlertType.INFORMATION, "Logout", "You have logged out.");
+        try {
+            logout_button.getScene().getWindow().hide();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginRegisterView.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to return to login page: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -232,11 +217,9 @@ private void handleAddIkan() {
         );
 
         File selectedFile = fileChooser.showOpenDialog(inventory_importButton.getScene().getWindow());
-
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
             inventory_image_view.setImage(image);
-            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
         }
     }
 
@@ -246,8 +229,34 @@ private void handleAddIkan() {
         datajual_form.setVisible(false);
         databeli_form.setVisible(false);
         datacustomer_form.setVisible(false);
-
         form.setVisible(true);
+    }
+
+    private void clearInventoryForm() {
+        inventory_IDIkan.clear();
+        inventory_namaIkan.clear();
+        inventory_stok.clear();
+        inventory_harga.clear();
+        inventory_IDNelayan.clear();
+        inventory_image_view.setImage(null);
+    }
+
+    private void loadDashboardData() {
+        try {
+            int totalCustomers = adminDAO.getTotalCustomers();
+            Numberof_customer.setText(String.valueOf(totalCustomers));
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load dashboard data: " + e.getMessage());
+        }
+    }
+
+    private void loadInventoryData() {
+        try {
+            List<Ikan> ikanList = adminDAO.getAllIkan();
+            inventory_table.setItems(FXCollections.observableArrayList(ikanList));
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load inventory data: " + e.getMessage());
+        }
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

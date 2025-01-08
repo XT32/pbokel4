@@ -10,11 +10,11 @@ model\User.class
 model\Ikan.class
 model\admin.class
 model\InventoryItem.class
+controller\FishCardController.class
 dao\PembelianDAO.class
 model\Penjualan.class
 utils\DatabaseConnection.class
 dao\IkanDAO.class
 model\Nelayan.class
-controller\fishCardController.class
 model\Pembelian.class
 main\Newfishmarket.class

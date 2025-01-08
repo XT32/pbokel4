@@ -1,3 +1,4 @@
+
 package dao;
 
 import model.Ikan;
@@ -8,7 +9,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class AdminDAO {
+
     private final Connection connection;
 
     public AdminDAO(Connection connection) {
@@ -34,6 +37,19 @@ public class AdminDAO {
         return ikanList;
     }
 
+    // Tambahkan data ikan baru
+    public void addIkan(Ikan ikan) throws SQLException {
+        String query = "INSERT INTO ikan (nama_ikan, harga, gambar_ikan, stok, id_nelayan) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, ikan.getNamaIkan());
+            stmt.setDouble(2, ikan.getHarga());
+            stmt.setString(3, ikan.getGambarIkan());
+            stmt.setInt(4, ikan.getStok());
+            stmt.setInt(5, ikan.getIdNelayan());
+            stmt.executeUpdate();
+        }
+    }
+
     // Ambil semua data penjualan
     public List<Pembelian> getAllPenjualan() throws SQLException {
         String query = """
@@ -51,10 +67,8 @@ public class AdminDAO {
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 penjualanList.add(new Pembelian(
-                        rs.getInt("id_penjualan"),
+                        rs.getInt("id_penjualan"), rs.getString("nama_ikan"),
                         rs.getInt("id_ikan"),
-                        rs.getInt("id_pelanggan"),
-                        rs.getInt("kuantitas"),
                         rs.getDouble("harga_total"),
                         rs.getTimestamp("tanggal_penjualan").toLocalDateTime()
                 ));
@@ -62,6 +76,7 @@ public class AdminDAO {
         }
         return penjualanList;
     }
+   
 
     // Ambil semua data pembelian
     public List<Pembelian> getAllPembelian() throws SQLException {
@@ -78,10 +93,8 @@ public class AdminDAO {
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 pembelianList.add(new Pembelian(
-                        rs.getInt("id_pembelian"),
+                        rs.getInt("id_pembelian"), rs.getString("nama_ikan"),
                         rs.getInt("id_ikan"),
-                        rs.getInt("id_supplier"),
-                        rs.getInt("kuantitas"),
                         rs.getDouble("harga_total"),
                         rs.getTimestamp("tanggal_pembelian").toLocalDateTime()
                 ));
@@ -109,5 +122,44 @@ public class AdminDAO {
             }
         }
         return pelangganList;
+    }
+
+    // Hapus data ikan
+    public void deleteIkan(int idIkan) throws SQLException {
+        String query = "DELETE FROM ikan WHERE id_ikan = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idIkan);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to delete ikan: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public int getTotalCustomers() throws SQLException {
+        String query = "SELECT COUNT(*) AS total_customers FROM users";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                return rs.getInt("total_customers");
+            }
+        }
+        return 0;
+    }
+
+    // Perbarui data ikan
+    public void updateIkan(Ikan ikan) throws SQLException {
+        String query = "UPDATE ikan SET nama_ikan = ?, harga = ?, gambar_ikan = ?, stok = ?, id_nelayan = ? WHERE id_ikan = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, ikan.getNamaIkan());
+            stmt.setDouble(2, ikan.getHarga());
+            stmt.setString(3, ikan.getGambarIkan());
+            stmt.setInt(4, ikan.getStok());
+            stmt.setInt(5, ikan.getIdNelayan());
+            stmt.setInt(6, ikan.getIdIkan());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to update ikan: " + e.getMessage());
+            throw e;
+        }
     }
 }
