@@ -47,6 +47,12 @@ public class AdminDAO {
             stmt.setInt(4, ikan.getStok());
             stmt.setInt(5, ikan.getIdNelayan());
             stmt.executeUpdate();
+<<<<<<< HEAD:src/main/java/dao/adminDAO.java
+=======
+        } catch (SQLException e) {
+            System.err.println("Failed to add ikan: " + e.getMessage());
+            throw e;
+>>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/dao/AdminDAO.java
         }
     }
 
@@ -136,6 +142,7 @@ public class AdminDAO {
         }
     }
 
+<<<<<<< HEAD:src/main/java/dao/adminDAO.java
     public int getTotalCustomers() throws SQLException {
         String query = "SELECT COUNT(*) AS total_customers FROM users";
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
@@ -146,6 +153,8 @@ public class AdminDAO {
         return 0;
     }
 
+=======
+>>>>>>> bd75d9630d8ecb8c33188c8f6fd4cabdb6c341df:src/main/java/dao/AdminDAO.java
     // Perbarui data ikan
     public void updateIkan(Ikan ikan) throws SQLException {
         String query = "UPDATE ikan SET nama_ikan = ?, harga = ?, gambar_ikan = ?, stok = ?, id_nelayan = ? WHERE id_ikan = ?";
